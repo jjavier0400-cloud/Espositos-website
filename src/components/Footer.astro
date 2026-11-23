@@ -20,7 +20,7 @@ const year = new Date().getFullYear();
       <dl class="mt-3 space-y-1 text-white">
         {hours.summary.map((h) => (<div class="flex justify-between gap-4"><dt>{h.days}</dt><dd>{h.time}</dd></div>))}
       </dl>
-      <p class="mt-3 text-sm text-white">24-hour emergency ice delivery.</p>
+      <p class="mt-3 text-sm text-white">{business.emergency.short}</p>
     </div>
     <div>
       <h2 class="text-lg font-bold">Call or follow</h2>

@@ -14,6 +14,10 @@
 //          Every photo is listed in images.md (AI vs real, prompt, where used).
 // =============================================================================
 
+// Handy phrases built once from the facts below, so they are never typed twice.
+const counties = ["Morris", "Somerset", "Essex"];
+const countiesText = counties.slice(0, -1).join(", ") + " and " + counties[counties.length - 1]; // "Morris, Somerset and Essex"
+
 export const business = {
   name: "Esposito's Ice & Party Rentals",
   shortName: "Esposito's Ice",
@@ -27,13 +31,30 @@ export const business = {
     zip: "07950",
     mapsUrl: "https://www.google.com/maps/search/?api=1&query=200+Speedwell+Ave+Morris+Plains+NJ+07950",
   },
-  counties: ["Morris", "Somerset", "Essex"],
+  counties,
+  countiesText,
   spanishBadge: "Se Habla Español",
   emergency: {
     // Current site: "Ice machine not working? We offer 24 hour emergency ice delivery."
     // verify: "owner" -> confirm the emergency line is the same number as the shop.
     headline: "Ice machine not working?",
     text: "We offer 24-hour emergency ice delivery.",
+    short: "24-hour emergency ice delivery.",
+  },
+  // ---------------------------------------------------------------------------
+  // POLICIES: the rules the site (and any future chatbot) may state as fact.
+  // Every line below already appears on the current site. Nothing here is new.
+  // Do NOT add a policy here unless the owner has confirmed it.
+  // ---------------------------------------------------------------------------
+  policies: {
+    howToOrder: "Orders are placed by phone. The website is informational only.",
+    delivery: "Delivery is available within our service area. A minimum order is required, and rates vary by location. Rush and after-hours deliveries are available.",
+    lugePickupOnly: "Party luges are pickup only and come in our standard design.",
+    dryIcePelletsNotice: "Please give us 3 days' notice for 50 lb dry ice pellets.",
+    crushedIce: "Crushed ice is available in all bag sizes for an additional cost.",
+    freezerBooking: "Please book freezers in advance to ensure availability. Freezer rentals include delivery within our service area.",
+    partyRentalsFlatRate: "For one flat rate we supply, deliver and pick up your party supplies. Rates vary by location.",
+    pricing: "Prices are not published on the website. Call for pricing.",
   },
   social: {
     instagram: "https://www.instagram.com/espositosice_/",
@@ -89,7 +110,7 @@ export const history = [
   {
     year: "Today",
     title: "Still chilling parties",
-    text: "Bagged ice, dry ice, luges, freezer rentals and party gear, delivered across Morris, Somerset and Essex counties.",
+    text: `Bagged ice, dry ice, luges, freezer rentals and party gear, delivered across ${business.countiesText} counties.`,
   },
 ];
 
@@ -106,7 +127,7 @@ export const delivery = {
   townsNote:
     "Is your town not listed? We may still be able to make the run. Call or send a quote request and we'll let you know.",
   towns: {
-    Morris: ["Boonton", "Chatham", "Chester", "Denville", "Dover", "East Hanover", "Harding", "Kinnelon", "Madison", "Mendham", "Morris Plains", "Morristown", "Mountain Lakes", "Parsippany", "Randolph", "Rockaway", "Roxbury"],
+    Morris: ["Boonton", "Chatham", "Chester", "Denville", "Dover", "East Hanover", "Harding", "Kinnelon", "Madison", "Mendham", `${business.address.city}`, "Morristown", "Mountain Lakes", "Parsippany", "Randolph", "Rockaway", "Roxbury"],
     Somerset: ["Bedminster", "Bernards Township", "Basking Ridge", "Liberty Corner", "Bernardsville", "Branchburg", "Bridgewater", "Far Hills", "Peapack-Gladstone"],
     Essex: ["Caldwell", "Essex Fells", "Fairfield", "Livingston", "Millburn", "Short Hills", "North Caldwell", "West Caldwell"],
   } as Record<string, string[]>,
@@ -124,7 +145,7 @@ export const products = {
     id: "bagged-ice",
     name: "Bagged ice",
     short: "Cubed, crushed and block ice, bagged and ready for pickup or delivery.",
-    text: "We offer ice in numerous forms and sizes, including bagged ice, cubed ice, crushed ice and ice blocks. Come to our Morris Plains location or place a delivery order.",
+    text: `We offer ice in numerous forms and sizes, including bagged ice, cubed ice, crushed ice and ice blocks. Come to our ${business.address.city} location or place a delivery order.`,
     photo: "site-crushed-ice-scoop.jpg",
     photoAlt: "Crushed ice with a metal scoop",
     specNote: "Crushed ice is available in all sizes for an additional cost.",
@@ -143,7 +164,7 @@ export const products = {
     id: "dry-ice",
     name: "Dry ice",
     short: "Blocks, crushed and pellets for shipping, downed freezers, science and fog effects.",
-    text: "We offer dry ice in blocks, crushed and pellets. Great for parties, concerts, Halloween, science experiments and more. Come to our Morris Plains location or place a delivery order.",
+    text: `We offer dry ice in blocks, crushed and pellets. Great for parties, concerts, Halloween, science experiments and more. Come to our ${business.address.city} location or place a delivery order.`,
     photo: "site-dry-ice-block.jpg",
     photoAlt: "A block of dry ice with vapor rising off it",
     specs: [
@@ -188,7 +209,7 @@ export const products = {
       { item: "Luge trays and stands", detail: "Catch melting water", price: null },
       { item: "Frozen shot glasses", price: null },
     ] as SpecRow[],
-    pickupNote: "Party luges are pickup only at our Morris Plains location. Delivery is not available for this item.",
+    pickupNote: `Party luges are pickup only at our ${business.address.city} location. Delivery is not available for this item.`,
   },
   artisan: {
     id: "artisan-ice",
@@ -318,9 +339,9 @@ export const reviews = [
 // FAQ: every answer comes from a fact on the current site.
 // -----------------------------------------------------------------------------
 export const faq = [
-  { q: "Do you deliver?", a: "Yes, within our service area in Morris, Somerset and Essex counties. A minimum order is required, and rates vary by location. Rush and after-hours deliveries are available." },
-  { q: "My ice machine broke. Can you help today?", a: "Yes. We offer 24-hour emergency ice delivery. Call (973) 267-2355." },
-  { q: "Can you deliver a party luge?", a: "No. Party luges are pickup only at 200 Speedwell Ave in Morris Plains, and they come in our standard design." },
+  { q: "Do you deliver?", a: `Yes, within our service area in ${business.countiesText} counties. A minimum order is required, and rates vary by location. Rush and after-hours deliveries are available.` },
+  { q: "My ice machine broke. Can you help today?", a: `Yes. ${business.emergency.text} Call ${business.phone.display}.` },
+  { q: "Can you deliver a party luge?", a: `No. Party luges are pickup only at ${business.address.street} in ${business.address.city}, and they come in our standard design.` },
   { q: "How much notice do you need for dry ice pellets?", a: "Please give us 3 days' notice for 50 lb dry ice pellets." },
   { q: "Do you have crushed ice?", a: "Yes. Crushed ice is available in all bag sizes for an additional cost." },
   { q: "Do I need to book a freezer in advance?", a: "Yes, please book in advance to ensure availability. Freezer rentals include delivery within our service area." },
@@ -338,7 +359,7 @@ export const quoteForm = {
   mode: "netlify" as "netlify" | "demo",
   name: "quote",
   productOptions: ["Bagged ice", "Dry ice", "Party luges", "Freezer rental", "Party rentals"],
-  success: "Thanks! Your request was sent. For anything urgent, call (973) 267-2355.",
+  success: `Thanks! Your request was sent. For anything urgent, call ${business.phone.display}.`,
 };
 
 // -----------------------------------------------------------------------------
@@ -385,27 +406,27 @@ export const moodImages = {
 
 export const seo = {
   home: {
-    title: "Esposito's Ice & Party Rentals | Ice & Dry Ice in Morris Plains, NJ",
-    description: "Bagged ice, dry ice, party luges, freezer rentals and party rentals in Morris Plains, NJ since 1979. Delivery to Morris, Somerset and Essex counties. 24-hour emergency ice.",
+    title: `Esposito's Ice & Party Rentals | Ice & Dry Ice in ${business.address.city}, NJ`,
+    description: `Bagged ice, dry ice, party luges, freezer rentals and party rentals in ${business.address.city}, NJ since ${business.since}. Delivery to ${business.countiesText} counties. 24-hour emergency ice.`,
   },
   ice: {
     title: "Ice Products: Bagged Ice, Dry Ice, Luges & Artisan Ice | Esposito's Ice",
-    description: "Cube and block ice, dry ice blocks, crushed and pellets, hand-carved party luges and clear artisan ice. Pickup in Morris Plains, NJ or delivery in our area.",
+    description: `Cube and block ice, dry ice blocks, crushed and pellets, hand-carved party luges and clear artisan ice. Pickup in ${business.address.city}, NJ or delivery in our area.`,
   },
   freezer: {
     title: "Ice Freezer Rental for Events in NJ | Esposito's Ice",
-    description: "Rent a slanted, upright or wide ice freezer for your event. Short or long term, delivery included in Morris, Somerset and Essex counties. Book in advance.",
+    description: `Rent a slanted, upright or wide ice freezer for your event. Short or long term, delivery included in ${business.countiesText} counties. Book in advance.`,
   },
   party: {
     title: "Party Rentals NJ: Tables, Chairs, Coolers & Food Machines | Esposito's Ice",
     description: "Party furniture and tents, coolers and keg keepers, popcorn, cotton candy and snow cone machines, and ice freezers. Delivered and picked up in our NJ service area.",
   },
   about: {
-    title: "About Esposito's Ice | Morris Plains, NJ Since 1979",
-    description: "Founded in 1979 by Joseph Esposito and run by the O'Hagan family since 1998. Northern New Jersey's local ice supplier.",
+    title: `About Esposito's Ice | ${business.address.city}, NJ Since ${business.since}`,
+    description: `Founded in ${business.since} by Joseph Esposito and run by the O'Hagan family since 1998. Northern New Jersey's local ice supplier.`,
   },
   contact: {
-    title: "Contact & Quote Request | Esposito's Ice, Morris Plains NJ",
-    description: "Call (973) 267-2355 or send a quote request. 200 Speedwell Ave, Morris Plains, NJ 07950. Se habla español.",
+    title: `Contact & Quote Request | Esposito's Ice, ${business.address.city} NJ`,
+    description: `Call ${business.phone.display} or send a quote request. ${business.address.street}, ${business.address.city}, ${business.address.state} ${business.address.zip}. Se habla español.`,
   },
 };

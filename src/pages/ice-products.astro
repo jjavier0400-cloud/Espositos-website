@@ -6,12 +6,12 @@ import SpecTable from "../components/SpecTable.astro";
 import EmergencyBand from "../components/EmergencyBand.astro";
 import Faq from "../components/Faq.astro";
 import CtaBand from "../components/CtaBand.astro";
-import { seo, products, delivery } from "../data/site";
+import { business, seo, products, delivery } from "../data/site";
 const { bagged, dry, luges, artisan } = products;
 const jump = [bagged, dry, luges, artisan];
 ---
 <Base title={seo.ice.title} description={seo.ice.description}>
-  <PageHeader title="Ice products" intro="Bagged ice, dry ice, hand-carved party luges and clear artisan ice. Pick up at our Morris Plains location or place a delivery order.">
+  <PageHeader title="Ice products" intro={`Bagged ice, dry ice, hand-carved party luges and clear artisan ice. Pick up at our ${business.address.city} location or place a delivery order.`}>
     <nav aria-label="On this page" class="hero-in mt-8" style="--i:2">
       <ul class="flex flex-wrap gap-2">
         {jump.map((p) => <li><a href={`#${p.id}`} class="btn btn-outline-light min-h-11 py-2 text-base">{p.name}</a></li>)}

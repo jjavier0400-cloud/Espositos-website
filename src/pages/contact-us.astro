@@ -13,7 +13,7 @@ import { seo, business, hours } from "../data/site";
         <div>
           <h2 class="text-2xl font-bold">Call</h2>
           <a href={`tel:${business.phone.tel}`} class="mt-1 inline-flex min-h-12 items-center font-display text-4xl font-bold text-green no-underline">{business.phone.display}</a>
-          <p class="mt-1 font-semibold">24-hour emergency ice delivery. {business.spanishBadge}.</p>
+          <p class="mt-1 font-semibold">{business.emergency.short} {business.spanishBadge}.</p>
         </div>
         <div>
           <h2 class="text-2xl font-bold">Visit</h2>

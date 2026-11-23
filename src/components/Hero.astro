@@ -18,13 +18,13 @@ import FallingIce from "./FallingIce.astro";
     <h1 class="mt-6">
       <span class="hero-in block font-display text-3xl font-bold md:text-5xl" style="--i:1">Esposito's</span>
       <span class="hero-in mt-1 block" style="--i:2"><span class="ice-word" data-text="ICE">ICE</span></span>
-      <span class="sr-only">&amp; Party Rentals, Morris Plains, New Jersey</span>
+      <span class="sr-only">&amp; Party Rentals, {business.address.city}, New Jersey</span>
     </h1>
 
     <div class="hero-in mt-8 max-w-xl" style="--i:3">
       <p class="font-display text-2xl font-bold text-white md:text-3xl">Ice is our specialty.</p>
       <p class="mt-3 text-lg text-white/90">
-        Serving residential and business clients in New Jersey since {business.since}. Bagged ice, dry ice, party luges, freezer and party rentals, delivered across Morris, Somerset and Essex counties.
+        Serving residential and business clients in New Jersey since {business.since}. Bagged ice, dry ice, party luges, freezer and party rentals, delivered across {business.countiesText} counties.
       </p>
     </div>
 

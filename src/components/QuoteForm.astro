@@ -1,7 +1,7 @@
 ---
 // Quote request form. Netlify Forms collects submissions (see quoteForm in site.ts).
 // Required: name, phone, product. Email is optional but must be valid if given.
-import { quoteForm } from "../data/site";
+import { quoteForm, business } from "../data/site";
 ---
 <div class="rounded-md bg-white p-6 shadow-[0_10px_40px_-20px_rgb(20_35_27/0.45)] md:p-8" id="quote">
   <h2 class="text-3xl font-bold">Request a quote</h2>
@@ -17,6 +17,7 @@ import { quoteForm } from "../data/site";
     class="mt-6 grid gap-5"
     data-quote-form
     data-mode={quoteForm.mode}
+    data-phone={business.phone.display}
   >
     <input type="hidden" name="form-name" value={quoteForm.name} />
     <p class="hidden"><label>Leave this empty: <input name="bot-field" tabindex="-1" autocomplete="off" /></label></p>
@@ -138,7 +139,7 @@ import { quoteForm } from "../data/site";
       success?.classList.remove("hidden");
       success?.focus();
     } catch {
-      if (formError) formError.textContent = "Sorry, that didn't go through. Please call (973) 267-2355.";
+      if (formError) formError.textContent = "Sorry, that didn't go through. Please call " + (form.dataset.phone ?? "") + ".";
       if (btn) { btn.disabled = false; btn.textContent = "Send request"; }
     }
   });
