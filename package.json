@@ -12,5 +12,8 @@
     "@tailwindcss/vite": "^4.3.5",
     "astro": "^7.4.13",
     "tailwindcss": "^4.3.5"
+  },
+  "devDependencies": {
+    "netlify-cli": "^27.20.1"
   }
 }
