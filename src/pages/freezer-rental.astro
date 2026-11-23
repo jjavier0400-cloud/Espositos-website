@@ -1,0 +1,52 @@
+---
+import Base from "../layouts/Base.astro";
+import PageHeader from "../components/PageHeader.astro";
+import Photo from "../components/Photo.astro";
+import SpecTable from "../components/SpecTable.astro";
+import TownChecker from "../components/TownChecker.astro";
+import CtaBand from "../components/CtaBand.astro";
+import { seo, products, moodImages } from "../data/site";
+const f = products.freezers;
+---
+<Base title={seo.freezer.title} description={seo.freezer.description} ogImage={moodImages.bottles}>
+  <PageHeader title="Ice freezer rental" intro="Short-term and long-term rentals so you don't run out of ice at your event." />
+
+  <section class="py-16 md:py-24" aria-labelledby="styles-h">
+    <div class="wrap">
+      <div class="measure" data-reveal>
+        <span class="kicker-rule"></span>
+        <h2 id="styles-h" class="text-4xl font-bold md:text-5xl">Three styles to fit your event</h2>
+        <p class="mt-4 text-lg text-muted">{f.text}</p>
+      </div>
+      <ul class="mt-10 grid gap-6 sm:grid-cols-3">
+        {f.styles.map((s, i) => (
+          <li class="lift rounded-md border border-line bg-white p-4" data-reveal style={`--i:${i}`}>
+            <Photo name={s.photo} alt={s.photoAlt} widths={[276]} sizes="(min-width: 640px) 30vw, 100vw" class="aspect-[5/4] w-full rounded object-contain" />
+            <h3 class="mt-4 text-2xl font-bold">{s.name}</h3>
+            {s.capacity && <p class="text-muted">{s.capacity}</p>}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="bg-frost py-16 md:py-24" aria-labelledby="sizes-h">
+    <div class="wrap grid items-start gap-10 lg:grid-cols-2 lg:gap-16">
+      <div data-reveal>
+        <h2 id="sizes-h" class="text-3xl font-bold md:text-4xl">How much they hold</h2>
+        <div class="mt-5"><SpecTable rows={f.sizes} caption="Freezer sizes and capacity" /></div>
+        <h3 class="mt-10 text-2xl font-bold">Rental terms</h3>
+        <ul class="mt-3 space-y-2">
+          {f.terms.map((t) => (<li class="flex gap-3"><span class="mt-2.5 h-2 w-2 flex-none rounded-full bg-tan" aria-hidden="true"></span>{t}</li>))}
+        </ul>
+        <a href="/contact-us/#quote" class="btn btn-primary mt-8">Book a freezer</a>
+      </div>
+      <div data-reveal style="--i:1">
+        <Photo name={moodImages.bottles} alt={moodImages.bottlesAlt} widths={[480, 768, 1168]} sizes="(min-width: 1024px) 50vw, 100vw" class="aspect-[4/3] w-full rounded-md object-cover" />
+      </div>
+    </div>
+  </section>
+
+  <TownChecker />
+  <CtaBand />
+</Base>

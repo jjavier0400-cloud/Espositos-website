@@ -1,0 +1,59 @@
+---
+import Base from "../layouts/Base.astro";
+import PageHeader from "../components/PageHeader.astro";
+import Photo from "../components/Photo.astro";
+import CtaBand from "../components/CtaBand.astro";
+import { seo, products, gallery, moodImages } from "../data/site";
+const p = products.party;
+---
+<Base title={seo.party.title} description={seo.party.description} ogImage={moodImages.bottles}>
+  <PageHeader image={moodImages.party} title="Party rentals" intro="Tables, chairs, coolers, food machines and more, delivered right to your location." />
+
+  <section class="py-16 md:py-24" aria-labelledby="inventory-h">
+    <div class="wrap">
+      <div class="measure" data-reveal>
+        <span class="kicker-rule"></span>
+        <h2 id="inventory-h" class="text-4xl font-bold md:text-5xl">Our inventory includes</h2>
+        <p class="mt-4 text-lg text-muted">{p.text}</p>
+      </div>
+      <ul class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {p.inventory.map((item, i) => (
+          <li class="lift rounded-md border border-line bg-white p-4" data-reveal style={`--i:${i}`}>
+            <Photo name={item.photo} alt={item.photoAlt} widths={[276, 500]} sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 100vw" class="aspect-[5/4] w-full rounded object-contain" />
+            <h3 class="mt-4 text-xl font-bold">{item.name}</h3>
+          </li>
+        ))}
+      </ul>
+      <p class="mt-10 max-w-2xl rounded-md bg-frost p-5 font-semibold" data-reveal>{p.deliveryNote}</p>
+    </div>
+  </section>
+
+  <section class="bg-frost py-16 md:py-24" aria-labelledby="luge-promo-h">
+    <div class="wrap grid items-center gap-10 lg:grid-cols-2" data-reveal>
+      <Photo name={products.luges.photo} alt={products.luges.photoAlt} widths={[571]} class="aspect-[3/2] w-full rounded-md object-cover" />
+      <div>
+        <h2 id="luge-promo-h" class="text-4xl font-bold">Add an ice luge</h2>
+        <p class="mt-4 text-lg text-muted">{products.luges.short} Pickup only at our Morris Plains location.</p>
+        <a href="/ice-products/#party-luges" class="btn btn-primary mt-6">See party luges</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="gallery" class="py-16 md:py-24" aria-labelledby="gallery-h">
+    <div class="wrap">
+      <div data-reveal>
+        <span class="kicker-rule"></span>
+        <h2 id="gallery-h" class="text-4xl font-bold md:text-5xl">Gallery</h2>
+      </div>
+      <ul class="mt-10 grid grid-cols-2 gap-3 md:grid-cols-4">
+        {gallery.map((g, i) => (
+          <li class="overflow-hidden rounded-md" data-reveal style={`--i:${i % 4}`}>
+            <Photo name={g.photo} alt={g.alt} widths={[265, 400, 571]} sizes="(min-width: 768px) 25vw, 50vw" class="aspect-square w-full object-cover transition-transform duration-500 motion-safe:hover:scale-105" />
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>

@@ -1,0 +1,56 @@
+---
+// "Do we deliver to your town?" Uses the town lists in site.ts.
+import { delivery, business, moodImages } from "../data/site";
+import { photo } from "../lib/images";
+import { getImage } from "astro:assets";
+const all = Object.entries(delivery.towns).flatMap(([county, towns]) => towns.map((t) => ({ town: t, county })));
+const bg = await getImage({ src: photo(moodImages.texture)!, width: 1344, format: "webp", quality: 60 });
+---
+<section class="relative isolate py-16 md:py-24" aria-labelledby="towns-h" id="service-area">
+  <div class="absolute inset-0 -z-10 bg-cover bg-center opacity-50" style={`background-image:url(${bg.src})`} aria-hidden="true"></div>
+  <div class="absolute inset-0 -z-10 bg-gradient-to-b from-white/70 to-white/90" aria-hidden="true"></div>
+  <div class="wrap grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-start">
+    <div data-reveal>
+      <span class="kicker-rule"></span>
+      <h2 id="towns-h" class="text-4xl font-bold md:text-5xl">Do we deliver to your town?</h2>
+      <p class="mt-4 text-lg text-muted">We deliver across {business.counties.join(", ").replace(/, ([^,]*)$/, " and $1")} counties.</p>
+      <form class="mt-6 rounded-md bg-white p-5 shadow-[0_10px_40px_-20px_rgb(20_35_27/0.4)]" data-town-form>
+        <label for="town-input" class="block font-semibold">Type your town</label>
+        <div class="mt-2 flex gap-2">
+          <input id="town-input" list="town-list" autocomplete="address-level2" class="min-h-12 w-full rounded-md border border-muted/50 px-3 text-base" placeholder="e.g. Morristown" />
+          <button class="btn btn-primary flex-none" type="submit">Check</button>
+        </div>
+        <datalist id="town-list">{all.map((t) => <option value={t.town} />)}</datalist>
+        <p class="mt-3 min-h-[3rem] font-semibold" role="status" aria-live="polite" data-town-result></p>
+      </form>
+    </div>
+    <div class="grid gap-3" data-reveal style="--i:1">
+      {Object.entries(delivery.towns).map(([county, towns]) => (
+        <details class="rounded-md bg-white/90 p-4 open:shadow-sm">
+          <summary class="flex min-h-11 cursor-pointer items-center justify-between text-lg font-bold">{county} County <span class="text-sm font-semibold text-muted">{towns.length} towns</span></summary>
+          <p class="mt-2 text-muted">{towns.join(", ")}</p>
+        </details>
+      ))}
+      <p class="text-muted">{delivery.townsNote}</p>
+    </div>
+  </div>
+  <script is:inline type="application/json" id="town-data" set:html={JSON.stringify(all)} />
+</section>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>("[data-town-form]");
+  const input = document.querySelector<HTMLInputElement>("#town-input");
+  const out = document.querySelector<HTMLElement>("[data-town-result]");
+  const data: { town: string; county: string }[] = JSON.parse(document.getElementById("town-data")?.textContent || "[]");
+  const norm = (s: string) => s.toLowerCase().replace(/township|twp\.?|borough/g, "").replace(/[^a-z]/g, "");
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (!input || !out) return;
+    const q = norm(input.value);
+    if (!q) { out.textContent = "Type a town name first."; return; }
+    const hit = data.find((d) => norm(d.town) === q) || data.find((d) => norm(d.town).startsWith(q));
+    out.textContent = hit
+      ? `Yes, ${hit.town} (${hit.county} County) is on our delivery list.`
+      : `${input.value.trim()} isn't on our list, but we may still be able to make the run. Give us a call.`;
+  });
+</script>

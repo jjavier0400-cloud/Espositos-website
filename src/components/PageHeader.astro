@@ -1,0 +1,18 @@
+---
+// Header band for inner pages, over the ice-wall photo.
+import { moodImages } from "../data/site";
+import Photo from "./Photo.astro";
+interface Props { title: string; intro?: string; image?: string }
+const { title, intro, image = moodImages.pageHeader } = Astro.props;
+---
+<section class="on-dark relative isolate overflow-hidden bg-ink text-white">
+  <div class="parallax absolute inset-0 -z-20">
+    <Photo name={image} alt="" widths={[640, 960, 1344]} sizes="100vw" loading="eager" fetchpriority="high" class="h-full w-full object-cover" />
+  </div>
+  <div class="absolute inset-0 -z-10 bg-gradient-to-r from-ink/85 via-ink/65 to-ink/30" aria-hidden="true"></div>
+  <div class="wrap py-14 md:py-20">
+    <h1 class="hero-in max-w-3xl text-5xl font-bold md:text-6xl">{title}</h1>
+    {intro && <p class="hero-in mt-4 max-w-2xl text-lg text-white/90" style="--i:1">{intro}</p>}
+    <slot />
+  </div>
+</section>

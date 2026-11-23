@@ -1,0 +1,22 @@
+---
+import { faq } from "../data/site";
+---
+<section class="bg-frost py-16 md:py-24" aria-labelledby="faq-h">
+  <div class="wrap grid gap-10 lg:grid-cols-[1fr_2fr]">
+    <div data-reveal>
+      <span class="kicker-rule"></span>
+      <h2 id="faq-h" class="text-4xl font-bold md:text-5xl">Good to know</h2>
+    </div>
+    <div class="divide-y divide-line border-y border-line" data-reveal style="--i:1">
+      {faq.map((f) => (
+        <details class="group py-2">
+          <summary class="flex min-h-12 cursor-pointer list-none items-center justify-between gap-4 text-lg font-bold">
+            {f.q}
+            <span class="text-2xl text-green transition-transform group-open:rotate-45" aria-hidden="true">+</span>
+          </summary>
+          <p class="pb-3 text-muted">{f.a}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>

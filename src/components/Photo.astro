@@ -1,0 +1,29 @@
+---
+// Shows a photo from src/assets/photos (resized + converted to WebP automatically).
+// If `name` is null, shows a branded "photo coming soon" placeholder instead.
+import { Image } from "astro:assets";
+import { photo } from "../lib/images";
+import Placeholder from "./Placeholder.astro";
+
+interface Props {
+  name?: string | null;
+  alt: string;
+  widths?: number[];
+  sizes?: string;
+  class?: string;
+  loading?: "lazy" | "eager";
+  fetchpriority?: "high" | "auto";
+}
+const { name, alt, widths = [320, 480, 640, 960], sizes = "(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw", class: cls = "", loading = "lazy", fetchpriority = "auto" } = Astro.props;
+const src = photo(name);
+let useWidths: number[] = [];
+if (src) {
+  useWidths = widths.filter((w) => w <= src.width);
+  if (!useWidths.includes(src.width) && src.width < Math.max(...widths)) useWidths.push(src.width);
+}
+---
+{src ? (
+  <Image src={src} alt={alt} widths={useWidths} sizes={sizes} class={cls} loading={loading} fetchpriority={fetchpriority} format="webp" quality={78} />
+) : (
+  <Placeholder label={alt} class={cls} />
+)}

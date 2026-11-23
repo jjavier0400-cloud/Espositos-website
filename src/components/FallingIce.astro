@@ -1,0 +1,41 @@
+---
+// Decorative ice cubes that drift down behind the home page hero text.
+// Pure CSS animation (see "Falling ice" in global.css). Hidden for visitors
+// who have asked their device for reduced motion, and thinned out on phones.
+//
+// Each cube: x = left position (%), s = size (px), d = seconds to fall,
+// w = start delay (negative = already mid-fall when the page opens),
+// r = how far it spins (deg), dx = sideways drift (px), o = see-through-ness.
+const cubes = [
+  { x: 6,  s: 22, d: 13, w: -2,  r: 220,  dx: 18,  o: 0.8 },
+  { x: 18, s: 14, d: 16, w: -9,  r: -160, dx: -12, o: 0.55 },
+  { x: 31, s: 30, d: 11, w: -5,  r: 260,  dx: 24,  o: 0.7 },
+  { x: 47, s: 18, d: 15, w: -12, r: -200, dx: -20, o: 0.6 },
+  { x: 63, s: 26, d: 12, w: -1,  r: 180,  dx: 16,  o: 0.75 },
+  { x: 82, s: 20, d: 14, w: -7,  r: -240, dx: -14, o: 0.65 },
+  // The cubes below are hidden on phones
+  { x: 12, s: 16, d: 17, w: -14, r: 150,  dx: 10,  o: 0.5 },
+  { x: 39, s: 12, d: 18, w: -4,  r: -130, dx: -8,  o: 0.45 },
+  { x: 55, s: 34, d: 10, w: -8,  r: 280,  dx: 26,  o: 0.6 },
+  { x: 72, s: 15, d: 16, w: -11, r: -170, dx: -10, o: 0.5 },
+  { x: 90, s: 28, d: 12, w: -3,  r: 210,  dx: -18, o: 0.7 },
+  { x: 96, s: 13, d: 19, w: -15, r: -150, dx: -6,  o: 0.45 },
+];
+---
+<div class="ice-fall pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
+  {cubes.map((c) => (
+    <div
+      class="ice-lane"
+      style={`--x:${c.x}%; --s:${c.s}px; --d:${c.d}s; --w:${c.w}s; --r:${c.r}deg; --dx:${c.dx}px; --o:${c.o}`}
+    >
+      <svg class="ice-cube" viewBox="0 0 40 40" width={c.s} height={c.s}>
+        <g stroke="rgba(255,255,255,0.7)" stroke-width="1" stroke-linejoin="round">
+          <polygon points="20,4 36,12 20,20 4,12" fill="rgba(255,255,255,0.45)" />
+          <polygon points="4,12 20,20 20,37 4,29" fill="rgba(205,232,246,0.28)" />
+          <polygon points="20,20 36,12 36,29 20,37" fill="rgba(170,212,236,0.2)" />
+        </g>
+        <path d="M10 12 L20 7" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity="0.85" />
+      </svg>
+    </div>
+  ))}
+</div>

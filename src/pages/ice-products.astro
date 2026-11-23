@@ -1,0 +1,127 @@
+---
+import Base from "../layouts/Base.astro";
+import PageHeader from "../components/PageHeader.astro";
+import Photo from "../components/Photo.astro";
+import SpecTable from "../components/SpecTable.astro";
+import EmergencyBand from "../components/EmergencyBand.astro";
+import Faq from "../components/Faq.astro";
+import CtaBand from "../components/CtaBand.astro";
+import { seo, products, delivery } from "../data/site";
+const { bagged, dry, luges, artisan } = products;
+const jump = [bagged, dry, luges, artisan];
+---
+<Base title={seo.ice.title} description={seo.ice.description}>
+  <PageHeader title="Ice products" intro="Bagged ice, dry ice, hand-carved party luges and clear artisan ice. Pick up at our Morris Plains location or place a delivery order.">
+    <nav aria-label="On this page" class="hero-in mt-8" style="--i:2">
+      <ul class="flex flex-wrap gap-2">
+        {jump.map((p) => <li><a href={`#${p.id}`} class="btn btn-outline-light min-h-11 py-2 text-base">{p.name}</a></li>)}
+      </ul>
+    </nav>
+  </PageHeader>
+
+  <!-- BAGGED ICE -->
+  <section id={bagged.id} class="py-16 md:py-24" aria-labelledby="bagged-h">
+    <div class="wrap grid gap-10 lg:grid-cols-2 lg:gap-16">
+      <div data-reveal>
+        <span class="kicker-rule"></span>
+        <h2 id="bagged-h" class="text-4xl font-bold md:text-5xl">{bagged.name}</h2>
+        <p class="mt-4 text-lg text-muted">{bagged.text}</p>
+        <Photo name={bagged.photo} alt={bagged.photoAlt} widths={[571]} class="mt-8 aspect-[3/2] w-full rounded-md object-cover" />
+      </div>
+      <div data-reveal style="--i:1">
+        <h3 class="text-2xl font-bold">Sizes</h3>
+        <div class="mt-3"><SpecTable rows={bagged.specs} caption="Bagged ice and ice block sizes" note={bagged.specNote} /></div>
+      </div>
+    </div>
+  </section>
+
+  <EmergencyBand />
+
+  <!-- DRY ICE -->
+  <section id={dry.id} class="py-16 md:py-24" aria-labelledby="dry-h">
+    <div class="wrap grid gap-10 lg:grid-cols-2 lg:gap-16">
+      <div data-reveal>
+        <span class="kicker-rule"></span>
+        <h2 id="dry-h" class="text-4xl font-bold md:text-5xl">{dry.name}</h2>
+        <p class="mt-4 text-lg text-muted">{dry.text}</p>
+        <div class="mt-6"><SpecTable rows={dry.specs} caption="Dry ice sizes" /></div>
+        <div class="mt-8 grid gap-6 sm:grid-cols-2">
+          {dry.forms.map((f) => (<div><h3 class="text-xl font-bold">{f.title}</h3><p class="mt-1 text-muted">{f.text}</p></div>))}
+        </div>
+      </div>
+      <div data-reveal style="--i:1">
+        <Photo name={dry.photo} alt={dry.photoAlt} widths={[371]} class="aspect-[3/2] w-full rounded-md object-cover" />
+        <p class="mt-4 border-l-4 border-tan pl-4 text-muted">{dry.funFact}</p>
+      </div>
+    </div>
+
+    <div class="wrap mt-14" id="dry-ice-safety">
+      <div class="rounded-md bg-frost p-6 md:p-10" data-reveal>
+        <h3 class="text-3xl font-bold">How to handle dry ice safely</h3>
+        <ul class="mt-6 grid gap-x-10 gap-y-3 md:grid-cols-2">
+          {dry.handling.map((h) => (<li class="flex gap-3"><span class="mt-2.5 h-2 w-2 flex-none rounded-full bg-green" aria-hidden="true"></span><span>{h}</span></li>))}
+        </ul>
+        <a href={dry.handlingPdf} class="btn btn-outline mt-8" target="_blank" rel="noopener">Download the handling guide (PDF)</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARTY LUGES -->
+  <section id={luges.id} class="bg-frost py-16 md:py-24" aria-labelledby="luges-h">
+    <div class="wrap grid items-start gap-10 lg:grid-cols-2 lg:gap-16">
+      <div class="grid grid-cols-5 gap-3" data-reveal>
+        <Photo name={luges.photo} alt={luges.photoAlt} widths={[571]} class="col-span-3 aspect-[3/4] h-full w-full rounded-md object-cover" />
+        <Photo name={luges.photo2} alt={luges.photo2Alt} widths={[266]} sizes="(min-width: 1024px) 20vw, 40vw" class="col-span-2 aspect-[3/4] h-full w-full rounded-md object-cover" />
+      </div>
+      <div data-reveal style="--i:1">
+        <span class="kicker-rule"></span>
+        <h2 id="luges-h" class="text-4xl font-bold md:text-5xl">{luges.name}</h2>
+        <p class="mt-4 text-lg text-muted">{luges.text}</p>
+        <div class="mt-6"><SpecTable rows={luges.specs} caption="Party luge details" /></div>
+        <p class="mt-6 rounded-md bg-white p-4 font-semibold">{luges.pickupNote}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ARTISAN ICE -->
+  <section id={artisan.id} class="py-16 md:py-24" aria-labelledby="artisan-h">
+    <div class="wrap">
+      <div class="measure" data-reveal>
+        <span class="kicker-rule"></span>
+        <h2 id="artisan-h" class="text-4xl font-bold md:text-5xl">{artisan.name}</h2>
+        <p class="mt-4 text-lg text-muted">{artisan.text}</p>
+      </div>
+      <div class="mt-10 grid gap-8 md:grid-cols-2">
+        {artisan.named.map((a, i) => (
+          <article class="grid gap-5 sm:grid-cols-[minmax(0,14rem)_1fr]" data-reveal style={`--i:${i}`}>
+            <Photo name={a.photo} alt={a.photoAlt} widths={[320, 550]} sizes="(min-width: 640px) 14rem, 100vw" class="aspect-square w-full rounded-md object-cover" />
+            <div>
+              <h3 class="font-display text-3xl font-bold text-green">{a.name}</h3>
+              <p class="mt-1 font-semibold">{a.shape}, {a.size}</p>
+              <p class="mt-2 text-muted">{a.text}</p>
+              <p class="mt-2 text-sm font-semibold">{a.packs}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+      <div class="mt-12 max-w-2xl rounded-md border border-line p-6" data-reveal>
+        <h3 class="text-2xl font-bold">Squares and spheres</h3>
+        <div class="mt-3"><SpecTable rows={artisan.specs} caption="Artisan ice squares and spheres" /></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DELIVERY -->
+  <section class="py-16" aria-labelledby="delivery-h">
+    <div class="wrap" data-reveal>
+      <h2 id="delivery-h" class="text-3xl font-bold md:text-4xl">Looking for delivery?</h2>
+      <ul class="mt-5 grid gap-3 sm:grid-cols-2">
+        {delivery.points.map((p) => (<li class="flex gap-3"><span class="mt-2.5 h-2 w-2 flex-none rounded-full bg-tan" aria-hidden="true"></span>{p}</li>))}
+      </ul>
+      <a href="/#service-area" class="mt-6 inline-flex min-h-11 items-center font-semibold underline decoration-tan decoration-2 underline-offset-4">Check if we deliver to your town</a>
+    </div>
+  </section>
+
+  <Faq />
+  <CtaBand />
+</Base>

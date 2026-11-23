@@ -1,0 +1,16 @@
+---
+// Branded stand-in until a real photo is added in src/data/site.ts.
+// The "Photo coming soon" tag shows in dev mode and while business.isPreview is true.
+import { business } from "../data/site";
+import Shamrock from "./Shamrock.astro";
+interface Props { label: string; class?: string }
+const { label, class: cls = "" } = Astro.props;
+const showMarker = import.meta.env.DEV || business.isPreview;
+---
+<div role="img" aria-label={`Photo coming soon: ${label}`} class:list={["relative flex items-center justify-center overflow-hidden bg-frost", cls]}>
+  <div class="flex flex-col items-center gap-2 text-green/40" aria-hidden="true">
+    <Shamrock class="h-10 w-10" />
+    <svg viewBox="0 0 90 32" class="h-8 w-[5.6rem]" aria-hidden="true" focusable="false"><text x="45" y="27" text-anchor="middle" fill="currentColor" style="font: 700 30px var(--font-display); letter-spacing: 2px">ICE</text></svg>
+  </div>
+  {showMarker && <span class="absolute bottom-2 left-2 rounded bg-white px-2 py-1 text-xs font-semibold text-muted shadow-sm">Photo coming soon</span>}
+</div>

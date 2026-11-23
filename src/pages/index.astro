@@ -1,0 +1,45 @@
+---
+import Base from "../layouts/Base.astro";
+import Hero from "../components/Hero.astro";
+import EmergencyBand from "../components/EmergencyBand.astro";
+import ProductGrid from "../components/ProductGrid.astro";
+import IceCalculator from "../components/IceCalculator.astro";
+import Heritage from "../components/Heritage.astro";
+import TownChecker from "../components/TownChecker.astro";
+import Reviews from "../components/Reviews.astro";
+import Faq from "../components/Faq.astro";
+import CtaBand from "../components/CtaBand.astro";
+import Photo from "../components/Photo.astro";
+import { seo, products, moodImages } from "../data/site";
+---
+<Base title={seo.home.title} description={seo.home.description}>
+  <Hero />
+  <EmergencyBand />
+  <ProductGrid />
+  <IceCalculator />
+  <Heritage />
+
+  <section class="py-16 md:py-24" aria-labelledby="freezer-h">
+    <div class="wrap grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+      <div class="order-2 lg:order-1" data-reveal>
+        <span class="kicker-rule"></span>
+        <h2 id="freezer-h" class="text-4xl font-bold md:text-5xl">Bagged ice freezer rentals</h2>
+        <p class="mt-4 text-lg text-muted">{products.freezers.text}</p>
+        <ul class="mt-6 space-y-2">
+          {products.freezers.terms.map((t) => (
+            <li class="flex gap-3"><span class="mt-2.5 h-2 w-2 flex-none rounded-full bg-tan" aria-hidden="true"></span>{t}</li>
+          ))}
+        </ul>
+        <a href="/freezer-rental/" class="btn btn-primary mt-8">See freezer styles</a>
+      </div>
+      <div class="order-1 lg:order-2" data-reveal style="--i:1">
+        <Photo name={moodImages.bottles} alt={moodImages.bottlesAlt} widths={[480, 768, 1168]} sizes="(min-width: 1024px) 50vw, 100vw" class="aspect-[4/3] w-full rounded-md object-cover" />
+      </div>
+    </div>
+  </section>
+
+  <TownChecker />
+  <Reviews />
+  <Faq />
+  <CtaBand />
+</Base>

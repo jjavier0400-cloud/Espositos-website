@@ -1,0 +1,84 @@
+---
+// Every page uses this layout: <head> tags, SEO, Google business data, header, footer.
+import "../styles/global.css";
+import { Font, getImage } from "astro:assets";
+import { business, hours, delivery } from "../data/site";
+import { photo } from "../lib/images";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import MobileCallBar from "../components/MobileCallBar.astro";
+
+interface Props { title: string; description: string; ogImage?: string }
+const { title, description, ogImage = "ai-hero-ice-cubes.jpg" } = Astro.props;
+const canonical = new URL(Astro.url.pathname, business.url).href;
+const og = await getImage({ src: photo(ogImage)!, width: 1200, height: 630, fit: "cover", format: "jpg" });
+const ogUrl = new URL(og.src, business.url).href;
+
+// LocalBusiness structured data (what Google shows in search & Maps panels)
+const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "@id": `${business.url}/#business`,
+  name: business.name,
+  url: business.url,
+  telephone: business.phone.tel,
+  image: ogUrl,
+  logo: `${business.url}/brand/logo.jpg`,
+  foundingDate: String(business.since),
+  knowsLanguage: ["en", "es"],
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: business.address.street,
+    addressLocality: business.address.city,
+    addressRegion: business.address.state,
+    postalCode: business.address.zip,
+    addressCountry: "US",
+  },
+  openingHoursSpecification: hours.week.filter((d) => d.open && d.close).map((d) => ({
+    "@type": "OpeningHoursSpecification", dayOfWeek: days[d.day], opens: d.open, closes: d.close,
+  })),
+  areaServed: Object.keys(delivery.towns).map((c) => ({ "@type": "AdministrativeArea", name: `${c} County, NJ` })),
+  sameAs: [business.social.instagram, business.social.facebook],
+};
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>document.documentElement.classList.add("js");</script>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {business.isPreview && <meta name="robots" content="noindex, nofollow" />}
+    <meta name="theme-color" content="#0a8141" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={business.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <Font cssVariable="--font-zilla" preload />
+    <Font cssVariable="--font-public" preload />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <MobileCallBar />
+    <script>
+      import "../scripts/site.ts";
+    </script>
+  </body>
+</html>

@@ -1,0 +1,29 @@
+---
+import { homeProducts } from "../data/site";
+import Photo from "./Photo.astro";
+---
+<section class="py-16 md:py-24" aria-labelledby="products-h">
+  <div class="wrap">
+    <div class="measure" data-reveal>
+      <span class="kicker-rule"></span>
+      <h2 id="products-h" class="text-4xl font-bold md:text-5xl">Ice products and rentals</h2>
+      <p class="mt-4 text-lg text-muted">From a single bag to a 300 lb block, and everything to keep it cold at your event.</p>
+    </div>
+    <ul class="mt-10 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+      {homeProducts.map((p, i) => (
+        <li class="lift group relative rounded-md bg-white" data-reveal style={`--i:${i % 3}`}>
+          <div class="aspect-[4/3] overflow-hidden rounded-md bg-frost">
+            <Photo name={p.photo} alt={p.photoAlt} class="h-full w-full object-cover transition-transform duration-500 motion-safe:group-hover:scale-[1.03]" />
+          </div>
+          <div class="pt-4">
+            <h3 class="text-2xl font-bold">
+              <a href={p.href} class="text-ink no-underline after:absolute after:inset-0 after:content-['']">{p.name}</a>
+            </h3>
+            <p class="mt-2 text-muted">{p.short}</p>
+            <span class="mt-3 inline-block font-semibold text-green underline decoration-tan decoration-2 underline-offset-4">See details</span>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,192 @@
+/* =============================================================================
+   DESIGN TOKENS: colors sampled from the Esposito's logo
+   Change a color here and it changes everywhere.
+   ============================================================================= */
+@import "tailwindcss";
+
+@theme {
+  /* Brand (sampled from public/brand/logo.jpg) */
+  --color-green: #0a8141; /* logo green: buttons, links, dark bands */
+  --color-tan: #b9915e;   /* logo tan: lines and decoration, large type on dark */
+  --color-white: #ffffff;
+  /* Supporting neutrals (not brand colors) */
+  --color-frost: #f2f7f4; /* light section background */
+  --color-ink: #14231b;   /* body text */
+  --color-muted: #4a5a51; /* secondary text */
+  --color-line: #d5e0da;  /* hairlines */
+
+  --font-display: var(--font-zilla);
+  --font-sans: var(--font-public);
+
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* ---- Base --------------------------------------------------------------- */
+@layer base {
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 88px; /* so #anchors aren't hidden under the sticky header */
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  font-family: var(--font-sans);
+  font-size: 1.0625rem; /* 17px */
+  line-height: 1.6;
+  color: var(--color-ink);
+  background: var(--color-white);
+  padding-bottom: calc(72px + env(safe-area-inset-bottom)); /* room for the mobile call bar */
+}
+@media (min-width: 1024px) {
+  body { padding-bottom: 0; }
+}
+h1, h2, h3 {
+  font-family: var(--font-display);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+p { text-wrap: pretty; }
+a { color: var(--color-green); }
+:focus-visible {
+  outline: 3px solid var(--color-green);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+.on-dark :focus-visible { outline-color: var(--color-white); }
+} /* end base */
+
+@layer components {
+
+/* ---- Layout helpers ----------------------------------------------------- */
+.wrap { width: 100%; max-width: 72rem; margin-inline: auto; padding-inline: 1.25rem; }
+@media (min-width: 768px) { .wrap { padding-inline: 2rem; } }
+.measure { max-width: 62ch; }
+
+/* ---- Buttons (all at least 48px tall for easy tapping) ------------------ */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  min-height: 48px; padding: 0.75rem 1.25rem;
+  border-radius: 8px; font-weight: 700; text-decoration: none; line-height: 1.2;
+  transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out), background-color 0.2s;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px -8px rgb(20 35 27 / 0.45); }
+.btn:active { transform: translateY(0); }
+.btn-primary { background: var(--color-green); color: var(--color-white); }
+.btn-light { background: var(--color-white); color: var(--color-green); }
+.btn-outline { background: transparent; color: var(--color-green); box-shadow: inset 0 0 0 2px var(--color-green); }
+.btn-outline-light { background: transparent; color: var(--color-white); box-shadow: inset 0 0 0 2px rgb(255 255 255 / 0.8); }
+
+/* ---- Section heading: a short tan rule, then the heading ---------------- */
+.kicker-rule { display: block; width: 3rem; height: 4px; background: var(--color-tan); border-radius: 2px; margin-bottom: 1rem; }
+
+/* ---- The ICE wordmark (echoes the 3D block letters in the logo) --------- */
+.ice-word {
+  position: relative; display: inline-block;
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(6.5rem, 34vw, 15rem); line-height: 0.82; letter-spacing: 0.02em;
+  color: var(--color-tan);
+  text-shadow:
+    0.012em 0.012em 0 var(--color-green), 0.024em 0.024em 0 var(--color-green),
+    0.036em 0.036em 0 var(--color-green), 0.048em 0.048em 0 var(--color-green),
+    0.06em 0.06em 0 var(--color-green);
+}
+/* The ice glint: a soft white highlight that sweeps across the letters */
+.ice-word::after {
+  content: attr(data-text);
+  position: absolute; inset: 0;
+  color: transparent; text-shadow: none;
+  background: linear-gradient(105deg, transparent 38%, rgb(255 255 255 / 0.9) 48%, rgb(255 255 255 / 0.15) 54%, transparent 62%);
+  background-size: 300% 100%; background-position: 120% 0;
+  -webkit-background-clip: text; background-clip: text;
+  pointer-events: none;
+  will-change: transform; /* own layer: the glint repaints alone, not the 3D shadow */
+}
+
+/* ---- Cards lift slightly on hover / tap -------------------------------- */
+.lift { transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out); }
+.lift:hover, .lift:focus-within, .lift:active {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px -22px rgb(20 35 27 / 0.45);
+}
+
+/* ---- Spec tables -------------------------------------------------------- */
+.spec { width: 100%; border-collapse: collapse; font-size: 1rem; }
+.spec th, .spec td { text-align: left; padding: 0.75rem 0; border-bottom: 1px solid var(--color-line); vertical-align: top; }
+.spec th { font-weight: 600; padding-right: 1rem; }
+.spec td { color: var(--color-muted); }
+.spec tr:last-child th, .spec tr:last-child td { border-bottom: 0; }
+
+} /* end components */
+
+/* =============================================================================
+   MOTION: everything below runs ONLY when the visitor has not asked for
+   reduced motion. Content is fully visible without JavaScript.
+   ============================================================================= */
+@media (prefers-reduced-motion: no-preference) {
+  /* Sections fade and rise once as they scroll into view; cards stagger */
+  .js [data-reveal] {
+    opacity: 0; translate: 0 18px;
+    transition: opacity 0.7s var(--ease-out), translate 0.7s var(--ease-out), transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
+    transition-delay: calc(var(--i, 0) * 90ms);
+  }
+  .js [data-reveal].is-in { opacity: 1; translate: none; }
+
+  /* Ice glint: sweeps once on load, then every few seconds, very softly */
+  .ice-word::after { animation: glint 7s ease-in-out 0.8s infinite; }
+  @keyframes glint {
+    0% { background-position: 120% 0; }
+    22%, 100% { background-position: -40% 0; }
+  }
+
+  /* Hero first-load sequence */
+  .hero-in { animation: hero-in 0.9s var(--ease-out) both; animation-delay: calc(var(--i, 0) * 120ms); }
+  @keyframes hero-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+  /* Subtle parallax on the hero photo (browsers that support scroll timelines) */
+  @supports (animation-timeline: scroll()) {
+    .parallax { animation: parallax linear both; }
+    /* separate rule so the CSS minifier can't fold the timeline into the shorthand */
+    .parallax.parallax { animation-timeline: scroll(root); animation-range: 0 100vh; }
+    @keyframes parallax { from { transform: translateY(0) scale(1.08); } to { transform: translateY(12%) scale(1.08); } }
+  }
+
+  /* Falling ice (home hero, see FallingIce.astro). Each "lane" is as tall as the
+     hero and slides down one full height, carrying its cube from just above the
+     top edge to just below the bottom. The cube itself drifts sideways and spins. */
+  .ice-fall { display: block; }
+  .ice-lane {
+    position: absolute; top: 0; left: var(--x); height: 100%;
+    animation: ice-fall var(--d) linear var(--w) infinite;
+    will-change: transform;
+  }
+  .ice-cube {
+    position: absolute; top: calc(var(--s) * -1.5); left: 0;
+    opacity: var(--o);
+    animation: ice-tumble var(--d) ease-in-out var(--w) infinite;
+    will-change: transform;
+  }
+  @keyframes ice-fall {
+    from { transform: translateY(0); }
+    to { transform: translateY(calc(100% + var(--s) * 3)); }
+  }
+  @keyframes ice-tumble {
+    0% { transform: translateX(0) rotate(0deg); }
+    50% { transform: translateX(var(--dx)) rotate(calc(var(--r) / 2)); }
+    100% { transform: translateX(0) rotate(var(--r)); }
+  }
+  /* Phones: only the first 6 cubes */
+  @media (max-width: 767px) {
+    .ice-lane:nth-child(n + 7) { display: none; }
+  }
+}
+
+/* Reduced motion: stop or shorten every remaining animation and transition */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .ice-fall { display: none; } /* no falling ice for visitors who turned motion off */
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

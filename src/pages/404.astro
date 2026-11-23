@@ -1,0 +1,11 @@
+---
+import Base from "../layouts/Base.astro";
+import { business } from "../data/site";
+---
+<Base title="Page not found | Esposito's Ice" description="This page doesn't exist.">
+  <section class="wrap py-24">
+    <h1 class="text-5xl font-bold">This page melted.</h1>
+    <p class="mt-4 text-lg text-muted">The page you're looking for isn't here. Try the links above, or call {business.phone.display}.</p>
+    <a href="/" class="btn btn-primary mt-8">Back to home</a>
+  </section>
+</Base>

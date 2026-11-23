@@ -1,0 +1,27 @@
+---
+import Base from "../layouts/Base.astro";
+import PageHeader from "../components/PageHeader.astro";
+import Heritage from "../components/Heritage.astro";
+import Reviews from "../components/Reviews.astro";
+import TownChecker from "../components/TownChecker.astro";
+import CtaBand from "../components/CtaBand.astro";
+import Photo from "../components/Photo.astro";
+import { seo, business } from "../data/site";
+---
+<Base title={seo.about.title} description={seo.about.description} ogImage="real-delivery-truck.jpg">
+  <PageHeader title="About Esposito's Ice" intro={`We are New Jersey's ice supplier, in Morris Plains since ${business.since}. We offer a great selection of ice products and party rental equipment.`} />
+  <Heritage />
+  <section class="py-16 md:py-24" aria-labelledby="visit-h">
+    <div class="wrap grid items-center gap-10 lg:grid-cols-2">
+      <Photo name={null} alt={`Our shop at ${business.address.street}`} class="aspect-[4/3] w-full rounded-md" />
+      <div data-reveal>
+        <h2 id="visit-h" class="text-4xl font-bold">Come see us</h2>
+        <p class="mt-4 text-lg text-muted">Drop by {business.address.street} in {business.address.city} during business hours, or place a delivery order.</p>
+        <a href={business.address.mapsUrl} class="btn btn-outline mt-6" target="_blank" rel="noopener">Get directions</a>
+      </div>
+    </div>
+  </section>
+  <Reviews />
+  <TownChecker />
+  <CtaBand />
+</Base>

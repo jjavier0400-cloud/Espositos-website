@@ -1,0 +1,20 @@
+---
+import { business } from "../data/site";
+---
+<section class="py-16 md:py-20" aria-labelledby="cta-h">
+  <div class="wrap" data-reveal>
+    <h2 id="cta-h" class="text-4xl font-bold md:text-5xl">Two ways to get ice</h2>
+    <div class="mt-8 grid gap-4 md:grid-cols-2">
+      <a href={`tel:${business.phone.tel}`} class="lift block rounded-md bg-green p-7 text-white no-underline">
+        <span class="block text-lg font-semibold text-white">Call us</span>
+        <span class="mt-1 block font-display text-3xl font-bold md:text-4xl">{business.phone.display}</span>
+        <span class="mt-2 block text-white">Fastest, and the way to reach us for emergency ice.</span>
+      </a>
+      <a href="/contact-us/#quote" class="lift block rounded-md bg-white p-7 text-ink no-underline shadow-[inset_0_0_0_2px_var(--color-green)]">
+        <span class="block text-lg font-semibold text-muted">Send a request</span>
+        <span class="mt-1 block font-display text-3xl font-bold text-green md:text-4xl">Request a quote</span>
+        <span class="mt-2 block text-muted">Tell us what you need and when. We'll get back to you.</span>
+      </a>
+    </div>
+  </div>
+</section>

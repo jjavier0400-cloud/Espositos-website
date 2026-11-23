@@ -1,0 +1,7 @@
+# Old WordPress URLs -> new pages (301 = permanent, keeps search rankings)
+/bagged-ice-products     /ice-products/#bagged-ice     301
+/dry-ice-products        /ice-products/#dry-ice        301
+/party-luges             /ice-products/#party-luges    301
+/artisan-ice-products    /ice-products/#artisan-ice    301
+/product-gallery         /party-rentals/#gallery       301
+/wp-content/uploads/2023/05/EspositosIce-DryIceHandling.pdf   /docs/dry-ice-handling.pdf   301

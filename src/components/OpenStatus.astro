@@ -1,0 +1,27 @@
+---
+// "Open now, until 3 pm" / "Closed now. Opens Monday at 8 am".
+// The hours come from site.ts. JavaScript works out New Jersey time in the
+// visitor's browser; without JavaScript the plain hours are shown instead.
+import { hours } from "../data/site";
+interface Props { variant?: "pill" | "compact" | "inline"; class?: string }
+const { variant = "pill", class: cls = "" } = Astro.props;
+---
+<span
+  class:list={["open-status", `open-status--${variant}`, cls.includes("hidden") ? "" : "inline-flex", cls]}
+  data-open-status
+  data-hours={JSON.stringify(hours.week)}
+  data-tz={hours.timezone}
+>
+  <span class="dot" aria-hidden="true"></span>
+  <span data-open-text>Mon–Fri 8–3, Sat 9–3, Sun 9:30–1</span>
+</span>
+
+<style>
+  .open-status { align-items: center; gap: 0.5rem; font-weight: 600; line-height: 1.3; }
+  .dot { width: 0.6rem; height: 0.6rem; border-radius: 999px; background: currentColor; opacity: 0.6; flex: none; }
+  [data-state="open"] .dot { background: #34c46e; opacity: 1; box-shadow: 0 0 0 3px rgb(52 196 110 / 0.25); }
+  [data-state="closed"] .dot { background: var(--color-tan); opacity: 1; }
+  .open-status--pill { padding: 0.4rem 0.85rem; border-radius: 999px; background: rgb(255 255 255 / 0.14); color: #fff; font-size: 0.95rem; backdrop-filter: blur(6px); }
+  .open-status--compact { font-size: 0.9rem; color: var(--color-ink); }
+  .open-status--inline { font-size: 1rem; }
+</style>

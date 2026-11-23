@@ -1,0 +1,204 @@
+---
+// "How much ice do I need?" calculator for the home page.
+// Numbers: `iceCalculator` in site.ts. Math: src/lib/iceCalc.ts.
+// "Request this order" opens the quote form with the estimate already filled in.
+import { iceCalculator as cfg, business } from "../data/site";
+import { poundsNeeded, bagMix, describeMix, mixWeight } from "../lib/iceCalc";
+
+const startUse = cfg.uses.find((u) => u.start) ?? cfg.uses[0];
+const startSetting = cfg.settings.find((s) => s.start) ?? cfg.settings[0];
+const pct = (f: number) => `+${Math.round((f - 1) * 100)}%`;
+
+// First view (and the no-JavaScript fallback) shows the starting answer
+const lbs = poundsNeeded({
+  guests: cfg.guests.start, lbPerGuest: startUse.lbPerGuest, weatherFactor: startSetting.factor,
+  hours: cfg.hours.start, baseHours: cfg.baseHours, extraPerHour: cfg.extraPerHour,
+});
+const mix = bagMix(lbs, cfg.bagSizes);
+---
+<section class="bg-ink py-16 text-white md:py-24" aria-labelledby="calc-h" id="ice-calculator">
+  <div class="wrap">
+    <div class="on-dark max-w-2xl" data-reveal>
+      <span class="kicker-rule"></span>
+      <h2 id="calc-h" class="text-4xl font-bold md:text-5xl">How much ice do I need?</h2>
+      <p class="mt-4 text-lg text-white/85">Answer four quick questions. We'll do the math, right down to the bags.</p>
+    </div>
+
+    <form class="calc mt-10 grid overflow-hidden rounded-md bg-white text-ink lg:grid-cols-[1.35fr_1fr]" data-calc data-reveal style="--i:1">
+      <div class="grid gap-7 p-6 md:p-8">
+        <div class="calc-field">
+          <div class="calc-label"><label for="calc-guests">Guests</label><output for="calc-guests" data-show="guests">{cfg.guests.start}</output></div>
+          <input id="calc-guests" name="guests" type="range" min={cfg.guests.min} max={cfg.guests.max} step={cfg.guests.step} value={cfg.guests.start} />
+        </div>
+
+        <div class="calc-field">
+          <div class="calc-label"><label for="calc-hours">How many hours?</label><output for="calc-hours" data-show="hours">{cfg.hours.start} hours</output></div>
+          <input id="calc-hours" name="hours" type="range" min={cfg.hours.min} max={cfg.hours.max} step="1" value={cfg.hours.start} />
+        </div>
+
+        <fieldset class="calc-field">
+          <legend class="calc-label">What's the ice for?</legend>
+          <div class="calc-opts sm:grid-cols-3">
+            {cfg.uses.map((u) => (
+              <label class="calc-opt">
+                <input type="radio" name="use" value={u.id} checked={u === startUse} />
+                <span><b>{u.label}</b><small>About {u.lbPerGuest} lb per guest</small></span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset class="calc-field">
+          <legend class="calc-label">Where is the party?</legend>
+          <div class="calc-opts sm:grid-cols-3">
+            {cfg.settings.map((s) => (
+              <label class="calc-opt">
+                <input type="radio" name="setting" value={s.id} checked={s === startSetting} />
+                <span><b>{s.label}</b><small>{s.hint}{s.factor > 1 && `, ${pct(s.factor)}`}</small></span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      </div>
+
+      <aside class="on-dark flex flex-col bg-green p-6 text-white md:p-8">
+        <p class="font-semibold text-white/85">You'll need about</p>
+        <p class="mt-1 font-display font-bold leading-none">
+          <span class="text-6xl md:text-7xl" data-out="lbs">{lbs.toLocaleString("en-US")}</span>
+          <span class="ml-1.5 text-2xl">lb of ice</span>
+        </p>
+        <div class="calc-bags mt-6" data-out="bags" aria-hidden="true">
+          {mix.flatMap((b) => Array.from({ length: b.count }, () => (
+            <span class={`calc-bag s${b.size}`}>{b.size}<i>lb</i></span>
+          )))}
+        </div>
+        <p class="mt-4 text-lg font-semibold" data-out="mix">{describeMix(mix)}</p>
+        <p class="text-sm text-white/80" data-out="total">{mixWeight(mix) !== lbs ? `${mixWeight(mix).toLocaleString("en-US")} lb in bags` : ""}</p>
+        <p class="mt-4 rounded-md bg-white/15 p-3 text-sm font-semibold" data-out="big" hidden={lbs < cfg.bigOrderLb}>
+          That's a lot of ice to keep frozen. Ask about a <a href="/freezer-rental/" class="text-white underline">freezer rental</a>.
+        </p>
+
+        <div class="mt-auto grid gap-3 pt-8">
+          <a class="btn btn-light text-lg" href="/contact-us/#quote" data-out="quote">Request this order</a>
+          <a class="btn btn-outline-light" href={`tel:${business.phone.tel}`}>Call {business.phone.display}</a>
+        </div>
+        <p class="mt-5 text-sm text-white/80">
+          An estimate based on a common rule of thumb: about 1 to 2.5 lb per guest for {cfg.baseHours} hours, plus {Math.round(cfg.extraPerHour * 100)}% for each extra hour. We'll confirm the amount when you order.
+        </p>
+        <p class="sr-only" role="status" data-out="status"></p>
+      </aside>
+    </form>
+  </div>
+  <script is:inline type="application/json" id="calc-data" set:html={JSON.stringify(cfg)} />
+</section>
+
+<style>
+  .calc-field { display: grid; gap: 0.6rem; border: 0; padding: 0; margin: 0; min-width: 0; }
+  .calc-label { display: flex; width: 100%; justify-content: space-between; align-items: baseline; gap: 1rem; font-weight: 700; font-size: 1.1rem; }
+  .calc-label output { font-family: var(--font-display); font-size: 1.5rem; color: var(--color-green); }
+  legend.calc-label { margin-bottom: 0.6rem; }
+
+  .calc input[type="range"] { width: 100%; height: 2.25rem; accent-color: var(--color-green); cursor: pointer; }
+
+  .calc-opts { display: grid; gap: 0.6rem; }
+  .calc-opt { position: relative; display: block; cursor: pointer; }
+  .calc-opt input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+  .calc-opt span {
+    display: grid; gap: 0.15rem; min-height: 64px; height: 100%; padding: 0.75rem 0.9rem;
+    border: 1.5px solid var(--color-line); border-radius: 8px; background: #fff;
+    transition: border-color 0.15s, background-color 0.15s, box-shadow 0.15s;
+  }
+  .calc-opt small { color: var(--color-muted); font-size: 0.9rem; }
+  .calc-opt:hover span { border-color: #8a978f; }
+  .calc-opt input:checked + span { border-color: var(--color-green); background: var(--color-frost); box-shadow: inset 0 0 0 1px var(--color-green); }
+  .calc-opt input:focus-visible + span { outline: 3px solid var(--color-green); outline-offset: 2px; }
+
+  /* Little bag icons in the result; bigger bags draw bigger */
+  .calc-bags { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.4rem; }
+  .calc-bags :global(.calc-bag) {
+    display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
+    border-radius: 6px 6px 9px 9px; background: rgb(255 255 255 / 0.92); color: var(--color-green);
+    font-weight: 800; line-height: 1; box-shadow: inset 0 3px 0 rgb(255 255 255 / 0.6), 0 2px 0 rgb(0 0 0 / 0.15);
+  }
+  .calc-bags :global(.calc-bag i) { font-style: normal; font-size: 0.6em; font-weight: 700; }
+  .calc-bags :global(.s40) { width: 2.6rem; height: 3.1rem; font-size: 1rem; }
+  .calc-bags :global(.s16) { width: 2.1rem; height: 2.5rem; font-size: 0.9rem; }
+  .calc-bags :global(.s5) { width: 1.7rem; height: 1.95rem; font-size: 0.8rem; }
+  .calc-bags :global(.calc-more) { align-self: center; font-weight: 700; padding-left: 0.25rem; }
+</style>
+
+<script>
+  import { poundsNeeded, bagMix, describeMix, mixWeight } from "../lib/iceCalc";
+
+  type Cfg = {
+    uses: { id: string; label: string; lbPerGuest: number }[];
+    settings: { id: string; label: string; hint: string; factor: number }[];
+    baseHours: number; extraPerHour: number; bagSizes: number[]; bigOrderLb: number; quoteProduct: string;
+  };
+  const cfg: Cfg = JSON.parse(document.getElementById("calc-data")?.textContent || "{}");
+  const form = document.querySelector<HTMLFormElement>("[data-calc]");
+  const MAX_BAG_ICONS = 16;
+
+  const out = (k: string) => form?.querySelector<HTMLElement>(`[data-out="${k}"]`);
+  const show = (k: string) => form?.querySelector<HTMLElement>(`[data-show="${k}"]`);
+  const fmt = (n: number) => n.toLocaleString("en-US");
+
+  function read() {
+    const data = new FormData(form!);
+    const use = cfg.uses.find((u) => u.id === data.get("use")) ?? cfg.uses[0];
+    const setting = cfg.settings.find((s) => s.id === data.get("setting")) ?? cfg.settings[0];
+    return { guests: Number(data.get("guests")), hours: Number(data.get("hours")), use, setting };
+  }
+
+  function update(announce: boolean) {
+    if (!form) return;
+    const { guests, hours, use, setting } = read();
+    const lbs = poundsNeeded({
+      guests, lbPerGuest: use.lbPerGuest, weatherFactor: setting.factor,
+      hours, baseHours: cfg.baseHours, extraPerHour: cfg.extraPerHour,
+    });
+    const mix = bagMix(lbs, cfg.bagSizes);
+    const mixText = describeMix(mix);
+    const inBags = mixWeight(mix);
+
+    show("guests")!.textContent = String(guests);
+    show("hours")!.textContent = `${hours} ${hours === 1 ? "hour" : "hours"}`;
+    out("lbs")!.textContent = fmt(lbs);
+    out("mix")!.textContent = mixText;
+    out("total")!.textContent = inBags !== lbs ? `${fmt(inBags)} lb in bags` : "";
+    out("big")!.hidden = lbs < cfg.bigOrderLb;
+
+    // Bag icons (capped so a 500-guest party doesn't fill the screen)
+    const bagsEl = out("bags")!;
+    bagsEl.replaceChildren();
+    let drawn = 0;
+    const totalBags = mix.reduce((n, b) => n + b.count, 0);
+    for (const b of mix) {
+      for (let i = 0; i < b.count && drawn < MAX_BAG_ICONS; i++, drawn++) {
+        const el = document.createElement("span");
+        el.className = `calc-bag s${b.size}`;
+        el.innerHTML = `${b.size}<i>lb</i>`;
+        bagsEl.append(el);
+      }
+    }
+    if (totalBags > drawn) {
+      const more = document.createElement("span");
+      more.className = "calc-more";
+      more.textContent = `+${totalBags - drawn} more`;
+      bagsEl.append(more);
+    }
+
+    // "Request this order" carries the estimate into the quote form
+    const where = setting.factor > 1 ? `${setting.label.toLowerCase()} (${setting.hint.toLowerCase()})` : setting.label.toLowerCase();
+    const details = `Ice calculator estimate: about ${fmt(lbs)} lb of ice (${mixText}). ${guests} guests, ${hours} ${hours === 1 ? "hour" : "hours"}, ${use.label.toLowerCase()}, ${where}.`;
+    const params = new URLSearchParams({ product: cfg.quoteProduct, details });
+    out("quote")!.setAttribute("href", `/contact-us/?${params}#quote`);
+
+    if (announce) out("status")!.textContent = `About ${fmt(lbs)} pounds of ice: ${mixText}.`;
+  }
+
+  form?.addEventListener("input", () => update(false));  // live while dragging
+  form?.addEventListener("change", () => update(true));  // screen readers hear the result once you let go
+  form?.addEventListener("submit", (e) => e.preventDefault());
+  update(false);
+</script>

@@ -1,0 +1,37 @@
+---
+// Home page hero: big "ICE" lettering with a soft glint, over a mood photo with gentle parallax.
+import { business, moodImages } from "../data/site";
+import Photo from "./Photo.astro";
+import OpenStatus from "./OpenStatus.astro";
+import FallingIce from "./FallingIce.astro";
+---
+<section class="on-dark relative isolate overflow-hidden bg-ink text-white">
+  <div class="parallax absolute inset-0 -z-20">
+    <Photo name={moodImages.hero} alt="" widths={[640, 960, 1344]} sizes="100vw" loading="eager" fetchpriority="high" class="h-full w-full object-cover" />
+  </div>
+  <div class="absolute inset-0 -z-10 bg-gradient-to-b from-ink/70 via-ink/45 to-ink/85" aria-hidden="true"></div>
+  <FallingIce />
+
+  <div class="wrap pb-14 pt-10 md:pb-24 md:pt-20">
+    <div class="hero-in" style="--i:0"><OpenStatus variant="pill" /></div>
+
+    <h1 class="mt-6">
+      <span class="hero-in block font-display text-3xl font-bold md:text-5xl" style="--i:1">Esposito's</span>
+      <span class="hero-in mt-1 block" style="--i:2"><span class="ice-word" data-text="ICE">ICE</span></span>
+      <span class="sr-only">&amp; Party Rentals, Morris Plains, New Jersey</span>
+    </h1>
+
+    <div class="hero-in mt-8 max-w-xl" style="--i:3">
+      <p class="font-display text-2xl font-bold text-white md:text-3xl">Ice is our specialty.</p>
+      <p class="mt-3 text-lg text-white/90">
+        Serving residential and business clients in New Jersey since {business.since}. Bagged ice, dry ice, party luges, freezer and party rentals, delivered across Morris, Somerset and Essex counties.
+      </p>
+    </div>
+
+    <div class="hero-in mt-8 flex flex-col gap-3 sm:flex-row" style="--i:4">
+      <a href={`tel:${business.phone.tel}`} class="btn btn-primary text-lg">Call {business.phone.display}</a>
+      <a href="/contact-us/#quote" class="btn btn-outline-light text-lg">Request a quote</a>
+    </div>
+    <p class="hero-in mt-6 inline-block rounded-full bg-white/15 px-3 py-1 text-sm font-semibold" style="--i:5">{business.spanishBadge}</p>
+  </div>
+</section>

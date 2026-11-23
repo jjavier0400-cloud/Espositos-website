@@ -1,0 +1,17 @@
+---
+import { business } from "../data/site";
+---
+<section class="on-dark bg-green text-white" aria-labelledby="emergency-h">
+  <div class="wrap flex flex-col gap-5 py-8 md:flex-row md:items-center md:justify-between md:py-10" data-reveal>
+    <div class="flex items-center gap-5">
+      <div class="flex h-20 w-20 flex-none flex-col items-center justify-center rounded-full border-4 border-tan font-display leading-none" aria-hidden="true">
+        <span class="text-3xl font-bold">24</span><span class="text-xs font-bold">HOURS</span>
+      </div>
+      <div>
+        <h2 id="emergency-h" class="text-2xl font-bold md:text-3xl">{business.emergency.headline}</h2>
+        <p class="mt-1 text-lg text-white">{business.emergency.text}</p>
+      </div>
+    </div>
+    <a href={`tel:${business.phone.tel}`} class="btn btn-light text-lg md:flex-none">Call {business.phone.display}</a>
+  </div>
+</section>

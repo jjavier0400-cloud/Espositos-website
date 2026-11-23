@@ -1,0 +1,59 @@
+---
+// Sticky header. Shrinks after you scroll. On phones the menu opens from the ☰ button.
+import { business } from "../data/site";
+import OpenStatus from "./OpenStatus.astro";
+const links = [
+  { href: "/ice-products/", label: "Ice Products" },
+  { href: "/freezer-rental/", label: "Freezer Rental" },
+  { href: "/party-rentals/", label: "Party Rentals" },
+  { href: "/about-us/", label: "About" },
+  { href: "/contact-us/", label: "Contact" },
+];
+const path = Astro.url.pathname;
+---
+<a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded focus:bg-white focus:p-3">Skip to content</a>
+<header class="site-header sticky top-0 z-40 border-b border-line bg-white/95 backdrop-blur" data-header>
+  <div class="wrap flex items-center justify-between gap-4 header-row">
+    <a href="/" class="flex shrink-0 items-center gap-3" aria-label={`${business.name}, home`}>
+      <img src="/brand/logo.jpg" alt="" width="56" height="56" class="logo rounded-sm" />
+    </a>
+
+    <nav aria-label="Main" class="hidden lg:block">
+      <ul class="flex items-center gap-1">
+        {links.map((l) => (
+          <li><a href={l.href} aria-current={path.startsWith(l.href) ? "page" : undefined} class="nav-link">{l.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <OpenStatus variant="compact" class="hidden sm:inline-flex lg:hidden xl:inline-flex" />
+      <a href={`tel:${business.phone.tel}`} class="btn btn-primary hidden whitespace-nowrap lg:inline-flex">Call {business.phone.display}</a>
+      <button type="button" class="menu-btn inline-flex lg:hidden" aria-expanded="false" aria-controls="mobile-nav" data-menu-btn>
+        <span class="sr-only">Menu</span>
+        <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" /></svg>
+      </button>
+    </div>
+  </div>
+
+  <nav id="mobile-nav" aria-label="Mobile" class="lg:hidden border-t border-line bg-white" hidden data-mobile-nav>
+    <ul class="wrap py-2">
+      {links.map((l) => (
+        <li><a href={l.href} aria-current={path.startsWith(l.href) ? "page" : undefined} class="block py-3 text-lg font-semibold text-ink no-underline">{l.label}</a></li>
+      ))}
+      <li class="py-3 sm:hidden"><OpenStatus variant="compact" /></li>
+    </ul>
+  </nav>
+</header>
+
+<style>
+  .header-row { height: 76px; transition: height 0.3s var(--ease-out); }
+  .logo { height: 56px; width: 56px; transition: height 0.3s var(--ease-out), width 0.3s var(--ease-out); }
+  .site-header.is-scrolled .header-row { height: 60px; }
+  .site-header.is-scrolled .logo { height: 44px; width: 44px; }
+  .nav-link { display: inline-flex; white-space: nowrap; align-items: center; min-height: 44px; padding: 0 0.8rem; color: var(--color-ink); font-weight: 600; text-decoration: none; border-radius: 6px; }
+  .nav-link:hover { color: var(--color-green); }
+  .nav-link[aria-current="page"] { color: var(--color-green); box-shadow: inset 0 -3px 0 var(--color-tan); border-radius: 0; }
+  .menu-btn { align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 8px; color: var(--color-ink); }
+  .menu-btn:hover { background: var(--color-frost); }
+</style>

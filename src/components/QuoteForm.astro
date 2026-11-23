@@ -1,0 +1,145 @@
+---
+// Quote request form. Netlify Forms collects submissions (see quoteForm in site.ts).
+// Required: name, phone, product. Email is optional but must be valid if given.
+import { quoteForm } from "../data/site";
+---
+<div class="rounded-md bg-white p-6 shadow-[0_10px_40px_-20px_rgb(20_35_27/0.45)] md:p-8" id="quote">
+  <h2 class="text-3xl font-bold">Request a quote</h2>
+  <p class="mt-2 text-muted">Fields marked <span aria-hidden="true">*</span><span class="sr-only">with an asterisk</span> are required.</p>
+
+  <form
+    name={quoteForm.name}
+    method="POST"
+    action="/contact-us/?sent=1"
+    data-netlify="true"
+    netlify-honeypot="bot-field"
+    novalidate
+    class="mt-6 grid gap-5"
+    data-quote-form
+    data-mode={quoteForm.mode}
+  >
+    <input type="hidden" name="form-name" value={quoteForm.name} />
+    <p class="hidden"><label>Leave this empty: <input name="bot-field" tabindex="-1" autocomplete="off" /></label></p>
+
+    <div class="field">
+      <label for="q-name">Name <span aria-hidden="true">*</span></label>
+      <input id="q-name" name="name" type="text" autocomplete="name" required aria-describedby="q-name-err" />
+      <p class="err" id="q-name-err" data-err-for="name"></p>
+    </div>
+
+    <div class="grid gap-5 sm:grid-cols-2">
+      <div class="field">
+        <label for="q-phone">Phone <span aria-hidden="true">*</span></label>
+        <input id="q-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required aria-describedby="q-phone-err" />
+        <p class="err" id="q-phone-err" data-err-for="phone"></p>
+      </div>
+      <div class="field">
+        <label for="q-email">Email <span class="font-normal text-muted">(optional)</span></label>
+        <input id="q-email" name="email" type="email" autocomplete="email" aria-describedby="q-email-err" />
+        <p class="err" id="q-email-err" data-err-for="email"></p>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="q-product">What do you need? <span aria-hidden="true">*</span></label>
+      <select id="q-product" name="product" required aria-describedby="q-product-err">
+        <option value="">Choose one</option>
+        {quoteForm.productOptions.map((o) => <option value={o}>{o}</option>)}
+      </select>
+      <p class="err" id="q-product-err" data-err-for="product"></p>
+    </div>
+
+    <div class="field">
+      <label for="q-message">Details <span class="font-normal text-muted">(optional)</span></label>
+      <textarea id="q-message" name="message" rows="4" placeholder="Date, quantity, delivery town…"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary w-full text-lg sm:w-auto" data-submit>Send request</button>
+    <p class="font-semibold text-[#a3261b]" role="alert" data-form-error></p>
+  </form>
+
+  <div class="mt-6 hidden rounded-md bg-frost p-6" tabindex="-1" data-form-success>
+    <p class="font-display text-2xl font-bold text-green">Request sent</p>
+    <p class="mt-2">{quoteForm.success}</p>
+  </div>
+</div>
+
+<style>
+  .field { display: grid; gap: 0.4rem; }
+  .field label { font-weight: 600; }
+  .field input, .field select, .field textarea {
+    width: 100%; min-height: 48px; padding: 0.7rem 0.85rem; font-size: 1rem;
+    border: 1.5px solid #8a978f; border-radius: 8px; background: #fff; color: var(--color-ink);
+  }
+  .field textarea { min-height: 7rem; }
+  .field input:focus, .field select:focus, .field textarea:focus { outline: 3px solid var(--color-green); outline-offset: 1px; border-color: var(--color-green); }
+  .field [aria-invalid="true"] { border-color: #a3261b; }
+  .err { color: #a3261b; font-size: 0.95rem; font-weight: 600; min-height: 0; }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>("[data-quote-form]");
+  const success = document.querySelector<HTMLElement>("[data-form-success]");
+  const formError = form?.querySelector<HTMLElement>("[data-form-error]");
+
+  // Pre-fill from a link, e.g. the home page ice calculator's "Request this order":
+  // /contact-us/?product=Bagged%20ice&details=...#quote
+  const params = new URLSearchParams(location.search);
+  const preProduct = params.get("product");
+  const preDetails = params.get("details");
+  const productSel = form?.elements.namedItem("product") as HTMLSelectElement | null;
+  if (productSel && preProduct && [...productSel.options].some((o) => o.value === preProduct)) productSel.value = preProduct;
+  const messageBox = form?.elements.namedItem("message") as HTMLTextAreaElement | null;
+  if (messageBox && preDetails) messageBox.value = `${preDetails.slice(0, 600)}\nEvent date and town: `;
+
+  const rules: Record<string, (v: string) => string> = {
+    name: (v) => (v.trim().length < 2 ? "Please enter your name." : ""),
+    phone: (v) => {
+      const d = v.replace(/\D/g, "");
+      return d.length === 10 || (d.length === 11 && d.startsWith("1")) ? "" : "Please enter a 10-digit phone number.";
+    },
+    email: (v) => (!v.trim() || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) ? "" : "That email doesn't look right. Check it or leave it empty."),
+    product: (v) => (v ? "" : "Please choose what you need."),
+  };
+
+  const check = (name: string) => {
+    const field = form?.elements.namedItem(name) as HTMLInputElement | null;
+    const errEl = form?.querySelector<HTMLElement>(`[data-err-for="${name}"]`);
+    if (!field || !errEl) return true;
+    const msg = rules[name](field.value);
+    errEl.textContent = msg;
+    field.setAttribute("aria-invalid", msg ? "true" : "false");
+    return !msg;
+  };
+
+  Object.keys(rules).forEach((n) => {
+    const field = form?.elements.namedItem(n) as HTMLElement | null;
+    field?.addEventListener("blur", () => { if (field.getAttribute("aria-invalid")) check(n); });
+  });
+
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (formError) formError.textContent = "";
+    const results = Object.keys(rules).map((n) => [n, check(n)] as const);
+    const firstBad = results.find(([, ok]) => !ok);
+    if (firstBad) { (form.elements.namedItem(firstBad[0]) as HTMLElement).focus(); return; }
+
+    const btn = form.querySelector<HTMLButtonElement>("[data-submit]");
+    if (btn) { btn.disabled = true; btn.textContent = "Sending…"; }
+    const local = ["localhost", "127.0.0.1", "[::1]"].includes(location.hostname);
+    const demo = form.dataset.mode === "demo" || local;
+    try {
+      if (!demo) {
+        const body = new URLSearchParams(new FormData(form) as unknown as Record<string, string>).toString();
+        const res = await fetch("/", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body });
+        if (!res.ok) throw new Error(String(res.status));
+      }
+      form.hidden = true;
+      success?.classList.remove("hidden");
+      success?.focus();
+    } catch {
+      if (formError) formError.textContent = "Sorry, that didn't go through. Please call (973) 267-2355.";
+      if (btn) { btn.disabled = false; btn.textContent = "Send request"; }
+    }
+  });
+</script>
