@@ -2,3 +2,8 @@
 [build]
   command = "npm run build"
   publish = "dist"
+
+# Serverless functions (the chat assistant lives in netlify/functions/chat.ts)
+[functions]
+  directory = "netlify/functions"
+

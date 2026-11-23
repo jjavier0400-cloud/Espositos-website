@@ -3,6 +3,13 @@
    Change a color here and it changes everywhere.
    ============================================================================= */
 @import "tailwindcss";
+/* Tailwind scans project files for class names. Skip files that hold no site markup, so editing
+   docs, tests or server code never changes the site's CSS. */
+@source not "../../README.md";
+@source not "../../CLAIMS.md";
+@source not "../../images.md";
+@source not "../../scripts";
+@source not "../../netlify";
 
 @theme {
   /* Brand (sampled from public/brand/logo.jpg) */

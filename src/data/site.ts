@@ -430,3 +430,50 @@ export const seo = {
     description: `Call ${business.phone.display} or send a quote request. ${business.address.street}, ${business.address.city}, ${business.address.state} ${business.address.zip}. Se habla español.`,
   },
 };
+
+// -----------------------------------------------------------------------------
+// UNVERIFIED FACTS (from CLAIMS.md, items marked "Verify").
+// The chatbot treats every topic listed here as unconfirmed: it may repeat what
+// the site says, but it adds "I'd confirm that by phone" and gives the number.
+// When the owner confirms an item, DELETE its row and the bot stops hedging.
+// -----------------------------------------------------------------------------
+export const unverified = [
+  { topic: "Opening hours", note: "Hours were copied from the old site and not yet confirmed by the owner." },
+  { topic: "The 1998 sale to the O'Hagan family", note: "The wording of the company history has not been confirmed." },
+  { topic: "24-hour emergency delivery phone number", note: "Not confirmed whether emergency calls use the same number as the shop." },
+  { topic: "Bagged ice and ice block sizes", note: "The size list was copied from the old site; its photo labels did not match." },
+  { topic: "Artisan ice names and sizes", note: "The old site says \"The Spare\", which may be a typo for \"The Spear\"." },
+  { topic: "Freezer sizes and capacity", note: "Only two of the three freezer styles list a size, and which size belongs to which style is unknown." },
+  { topic: "Which Facebook page is official", note: "The old site links two different pages." },
+];
+
+// -----------------------------------------------------------------------------
+// CHATBOT (demo). Everything about the assistant is switched and tuned here.
+//
+//   enabled: false  -> NOTHING is added to any page (no markup, script or request)
+//                      and the chat function answers 404. This is the kill switch:
+//                      set it to false and redeploy.
+//
+// The bot's knowledge is built from the rest of this file at request time, so
+// editing business, hours, products, delivery, policies, faq or unverified above
+// changes its answers. Do not copy facts into the settings below.
+// -----------------------------------------------------------------------------
+export const chatbot = {
+  enabled: false,
+  // One place to change the model. Pricing: platform.claude.com/docs/en/about-claude/pricing
+  model: "claude-haiku-5-5",
+  endpoint: "/api/chat",         // must match config.path in netlify/functions/chat.ts
+  maxOutputTokens: 400,          // hard cap on each reply (cost control)
+  maxMessageChars: 500,          // longest visitor message accepted
+  maxUserMessages: 12,           // messages per conversation before we ask them to call
+  historyWindow: 10,             // most recent messages sent to the model
+  title: "Ask Esposito's",
+  greeting: "Hi! I can answer questions about our ice, dry ice, luges, freezer rentals and party rentals. What would you like to know?",
+  privacyNotice: "Chats are handled by an AI assistant. Please don't share sensitive information. If you send your contact details, they go to Esposito's Ice so they can follow up.",
+  suggestions: ["What are your hours?", "Do you deliver to Morristown?", "How does dry ice work?", "Can I rent a freezer?"],
+  leadForm: {
+    name: "chat-lead",
+    button: "Request a call back",
+    needOptions: ["Bagged ice", "Dry ice", "Party luges", "Freezer rental", "Party rentals", "Something else"],
+  },
+};

@@ -2,11 +2,17 @@
 // Every page uses this layout: <head> tags, SEO, Google business data, header, footer.
 import "../styles/global.css";
 import { Font, getImage } from "astro:assets";
-import { business, hours, delivery } from "../data/site";
+import { business, hours, delivery, chatbot } from "../data/site";
 import { photo } from "../lib/images";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import MobileCallBar from "../components/MobileCallBar.astro";
+
+// The chatbot widget is loaded only when the flag is on, so a build with it off ships none of its
+// code. CHATBOT_ENABLED is set in astro.config.mjs from chatbot.enabled in site.ts; this guard makes
+// the build fail loudly if the two ever disagree.
+if (chatbot.enabled !== Boolean(import.meta.env.CHATBOT_ENABLED)) throw new Error("chatbot.enabled in site.ts does not match the build flag in astro.config.mjs");
+const ChatWidget = import.meta.env.CHATBOT_ENABLED ? (await import("../components/ChatWidget.astro")).default : null;
 
 interface Props { title: string; description: string; ogImage?: string }
 const { title, description, ogImage = "ai-hero-ice-cubes.jpg" } = Astro.props;
@@ -77,6 +83,7 @@ const jsonLd = {
     </main>
     <Footer />
     <MobileCallBar />
+    {ChatWidget && <ChatWidget />}
     <script>
       import "../scripts/site.ts";
     </script>
