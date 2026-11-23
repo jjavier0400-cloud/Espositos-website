@@ -35,6 +35,8 @@ On `localhost` the form runs in demo mode and sends nothing.
 
 ## Chat assistant (demo, OFF by default)
 
+> **WARNING: do not merge `feature/chatbot-demo` into `main` as-is.** On this branch the flag is deliberately `chatbot.enabled: true` so the demo works for the owner. On `main` it must stay `false`. Before any merge, set `enabled: false` in `src/data/site.ts` (and finish the owner's checks).
+
 An AI assistant that answers visitor questions and collects call-back requests. It is **off**: with it off, the built site is byte-for-byte the same as a site without it.
 
 ### Turn it on or off (the kill switch)

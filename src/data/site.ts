@@ -445,6 +445,7 @@ export const unverified = [
   { topic: "Artisan ice names and sizes", note: "The old site says \"The Spare\", which may be a typo for \"The Spear\"." },
   { topic: "Freezer sizes and capacity", note: "Only two of the three freezer styles list a size, and which size belongs to which style is unknown." },
   { topic: "Which Facebook page is official", note: "The old site links two different pages." },
+  { topic: "Ice calculator numbers", note: "The calculator's per-guest amounts and adjustments are a common industry rule of thumb, not from the owner. Point visitors to the calculator on the home page; never state its numbers." },
 ];
 
 // -----------------------------------------------------------------------------
@@ -459,7 +460,7 @@ export const unverified = [
 // changes its answers. Do not copy facts into the settings below.
 // -----------------------------------------------------------------------------
 export const chatbot = {
-  enabled: false,
+  enabled: true,
   // One place to change the model. Pricing: platform.claude.com/docs/en/about-claude/pricing
   model: "claude-haiku-5-5",
   endpoint: "/api/chat",         // must match config.path in netlify/functions/chat.ts
